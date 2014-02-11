@@ -3,13 +3,14 @@
 -compile([export_all]).
 
 generate() ->
+	extra(),
 	Modules = code:all_loaded(),
 	Bifs = bifs(),
 	AllCompletions = [ process(M) || {M, _} <- Modules ],
 	All = lists:append(Bifs, lists:append(AllCompletions)),
-	Props = [{source, <<"source.erlang">>}, {completions, All}],
+	Props = [{source, <<"meta.type.function.erlang">>}, {completions, All}],
 	Bin = list_to_binary(mochijson2:encode(Props)),
-	file:write_file("C:\\Users\\mnn\\AppData\\Roaming\\Sublime Text 3\\Packages\\Sublime-Erlang\\ErlangStdLibs.sublime-completions", Bin).
+	file:write_file("ErlangStdLibs.sublime-completions", Bin).
 
 
 process(Module) ->
@@ -28,7 +29,10 @@ completion(Module, Fun, Arity) ->
 	Contents = atom_to_list(Module) ++ ":" ++ atom_to_list(Fun) ++ "(" ++ string:join(A, ", ")  ++ ")",
 	[{trigger, list_to_binary(Trigger)}, {contents, list_to_binary(Contents)}].
 
-bifs()->
+bifs() ->
 	Exports = erlang:module_info(exports),
 	[completion(Fun, Arity) || {Fun, Arity} <- Exports].
+
+extra() ->
+	application:load(mnesia).
 	
