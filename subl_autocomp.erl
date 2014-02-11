@@ -12,7 +12,6 @@ generate() ->
 	Bin = list_to_binary(mochijson2:encode(Props)),
 	file:write_file("ErlangStdLibs.sublime-completions", Bin).
 
-
 process(Module) ->
 	Exports = Module:module_info(exports),
 	[completion(Module, Fun, Arity) || {Fun, Arity} <- Exports].
@@ -34,5 +33,4 @@ bifs() ->
 	[completion(Fun, Arity) || {Fun, Arity} <- Exports].
 
 extra() ->
-	application:load(mnesia).
-	
+	ok = application:load(mnesia).
